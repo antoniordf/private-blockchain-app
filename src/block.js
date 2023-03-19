@@ -36,7 +36,7 @@ class Block {
    *  Note: to access the class values inside a Promise code you need to create an auxiliary value `let self = this;`
    */
   validate() {
-    let self = this;
+    // let self = this;
     return new Promise((resolve, reject) => {
       // Save in auxiliary variable the current block hash
       const currentBlockHash = this.hash;
@@ -44,9 +44,7 @@ class Block {
       const calculatedHash = SHA256(
         this.height + this.body + this.time + this.previousBlockHash
       );
-      // Comparing if the hashes changed
-      // Returning the Block is not valid
-      // Returning the Block is valid
+      // Comparing if the hashes changed; Returning the Block is not valid; Returning the Block is valid
       if (currentBlockHash === calculatedHash) {
         resolve(true);
       } else {
@@ -64,11 +62,25 @@ class Block {
    *  3. Resolve with the data and make sure that you don't need to return the data for the `genesis block`
    *     or Reject with an error.
    */
+  decodeData(data) {
+    const decodedData = hex2ascii(data);
+    return decodedData;
+  }
+
   getBData() {
-    // Getting the encoded data saved in the Block
-    // Decoding the data to retrieve the JSON representation of the object
-    // Parse the data to an object to be retrieve.
-    // Resolve with the data if the object isn't the Genesis block
+    return new Promise((resolve, reject) => {
+      // Getting the encoded data saved in the Block
+      const data = this.body;
+      // Decoding the data to retrieve the JSON representation of the object
+      const blockData = JSON.parse(this.decodeData(data));
+      // Parse the data to an object to be retrieve.
+      // Resolve with the data if the object isn't the Genesis block
+      if (blockData && this.height > 0) {
+        resolve(blockData);
+      } else {
+        reject(new Error("Data not found or Genesis block"));
+      }
+    });
   }
 }
 
