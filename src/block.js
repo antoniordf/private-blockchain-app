@@ -1,3 +1,4 @@
+"use strict";
 /**
  *                          Block class
  *  The Block class is a main component into any Blockchain platform,
@@ -38,10 +39,19 @@ class Block {
     let self = this;
     return new Promise((resolve, reject) => {
       // Save in auxiliary variable the current block hash
+      const currentBlockHash = this.hash;
       // Recalculate the hash of the Block
+      const calculatedHash = SHA256(
+        this.height + this.body + this.time + this.previousBlockHash
+      );
       // Comparing if the hashes changed
       // Returning the Block is not valid
       // Returning the Block is valid
+      if (currentBlockHash === calculatedHash) {
+        resolve(true);
+      } else {
+        reject(false);
+      }
     });
   }
 
