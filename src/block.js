@@ -75,7 +75,7 @@ class Block {
       const blockData = JSON.parse(this.decodeData(data));
       // Parse the data to an object to be retrieve.
       // Resolve with the data if the object isn't the Genesis block
-      if (blockData && this.height > 0) {
+      if (blockData && this.hash !== null) {
         resolve(blockData);
       } else {
         reject(new Error("Data not found or Genesis block"));
