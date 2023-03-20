@@ -122,6 +122,7 @@ class Blockchain {
         (currentTime - messageTime) / 60 <= 5 &&
         bitcoinMessage.verify(message, address, signature)
       ) {
+        star.owner = address;
         const block = new BlockClass.Block(star);
         this._addBlock(block);
         resolve(block);
@@ -171,9 +172,30 @@ class Blockchain {
    * @param {*} address
    */
   getStarsByWalletAddress(address) {
-    let self = this;
+    // let self = this;
     let stars = [];
-    return new Promise((resolve, reject) => {});
+    return new Promise((resolve, reject) => {
+      let promises = [];
+
+      for (const block of this.chain) {
+        // Skip the genesis block
+        if (block.height === 0) continue;
+
+        // Add block.betBData() promise to promises array
+        promises.push(
+          block.getBData().then((decodedData) => {
+            if (decodedData.owner === address) {
+              stars.push(decodedData);
+            }
+          })
+        );
+      }
+
+      // Wait for all promises to complete
+      Promise.all(promises)
+        .then(() => resolve(stars))
+        .catch((err) => reject(err));
+    });
   }
 
   /**
@@ -183,9 +205,16 @@ class Blockchain {
    * 2. Each Block should check the with the previousBlockHash
    */
   validateChain() {
-    let self = this;
+    // let self = this;
     let errorLog = [];
-    return new Promise(async (resolve, reject) => {});
+    return new Promise((resolve, reject) => {
+      this.chain.forEach((block) => {
+        if (block.validate() === false) {
+          errorLog.push(new Error(`Block ${block.height} failed validation`));
+        }
+      });
+      resolve(errorLog);
+    });
   }
 }
 
