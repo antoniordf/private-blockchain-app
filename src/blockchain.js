@@ -224,12 +224,4 @@ class Blockchain {
   }
 }
 
-const block = new BlockClass.Block("Hello World");
-const blockchain = new Blockchain();
-console.log(blockchain.height);
-console.log(blockchain.chain);
-blockchain._addBlock(block);
-console.log("/////");
-console.log(blockchain.chain);
-
 module.exports.Blockchain = Blockchain;
