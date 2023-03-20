@@ -71,7 +71,7 @@ class Blockchain {
       block.hash = SHA256(JSON.stringify(block)).toString();
       if (this.chain.push(block)) {
         this.height++;
-        resolve("Block added");
+        resolve(block);
       } else {
         reject(new Error("Unable to add block"));
       }
@@ -124,7 +124,7 @@ class Blockchain {
       ) {
         const block = new BlockClass.Block(star);
         this._addBlock(block);
-        resolve("Block added");
+        resolve(block);
       } else {
         reject(new Error("Transaction timed out or signature failed"));
       }
