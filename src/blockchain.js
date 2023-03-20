@@ -138,8 +138,13 @@ class Blockchain {
    * @param {*} hash
    */
   getBlockByHash(hash) {
-    let self = this;
-    return new Promise((resolve, reject) => {});
+    // let self = this;
+    return new Promise((resolve, reject) => {
+      const selectedBlock = this.chain.filter((block) => block.hash === hash);
+      selectedBlock
+        ? resolve(selectedBlock)
+        : reject(new Error("No block was found with this hash"));
+    });
   }
 
   /**
