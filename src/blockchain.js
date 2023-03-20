@@ -160,7 +160,7 @@ class Blockchain {
    * @param {*} height
    */
   getBlockByHeight(height) {
-    let self = this;
+    // let self = this;
     return new Promise((resolve, reject) => {
       let block = this.chain.filter((p) => p.height === height)[0];
       if (block) {

@@ -19,10 +19,17 @@ class BlockchainController {
 
   // Enpoint to Get a Block by Height (GET Endpoint)
   getBlockByHeight() {
-    this.app.get("/block/height/:height", async (req, res) => {
+    this.app.get("/block/:height", async (req, res) => {
       if (req.params.height) {
         const height = parseInt(req.params.height);
-        let block = await this.blockchain.getBlockByHeight(height);
+        let block;
+        try {
+          block = await this.blockchain.getBlockByHeight(height);
+        } catch (err) {
+          return res
+            .status(500)
+            .send(`An error occurred while fetching the block. ${err.message}`);
+        }
         if (block) {
           return res.status(200).json(block);
         } else {
