@@ -63,14 +63,20 @@ class Blockchain {
   _addBlock(block) {
     // let self = this;
     return new Promise((resolve, reject) => {
-      block.height = this.chain.length;
+      // Increment the chain height
+      this.height++;
+      // Set block height to be equal to the height of the chain
+      block.height = this.height;
+      // Calculate block time
       block.time = new Date().getTime().toString().slice(0, -3);
-      if (this.chain.length > 0) {
+      // If not genesis block, get previous block hash
+      if (this.height > 0) {
         block.previousBlockHash = this.chain[this.height - 1].hash;
       }
+      // Calculate the hash of this block
       block.hash = SHA256(JSON.stringify(block)).toString();
+      // If push successful, resolve with the added block, otherwise raise an error
       if (this.chain.push(block)) {
-        this.height++;
         resolve(block);
       } else {
         reject(new Error("Unable to add block"));
@@ -154,7 +160,7 @@ class Blockchain {
    * @param {*} height
    */
   getBlockByHeight(height) {
-    // let self = this;
+    let self = this;
     return new Promise((resolve, reject) => {
       let block = this.chain.filter((p) => p.height === height)[0];
       if (block) {
@@ -217,5 +223,13 @@ class Blockchain {
     });
   }
 }
+
+const block = new BlockClass.Block("Hello World");
+const blockchain = new Blockchain();
+console.log(blockchain.height);
+console.log(blockchain.chain);
+blockchain._addBlock(block);
+console.log("/////");
+console.log(blockchain.chain);
 
 module.exports.Blockchain = Blockchain;
