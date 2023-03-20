@@ -87,7 +87,13 @@ class Blockchain {
    * @param {*} address
    */
   requestMessageOwnershipVerification(address) {
-    return new Promise((resolve) => {});
+    return new Promise((resolve) => {
+      const message = `${address}:${new Date()
+        .getTime()
+        .toString()
+        .slice(0, -3)}:starRegistry`;
+      resolve(message);
+    });
   }
 
   /**
@@ -108,8 +114,21 @@ class Blockchain {
    * @param {*} star
    */
   submitStar(address, message, signature, star) {
-    let self = this;
-    return new Promise(async (resolve, reject) => {});
+    // let self = this;
+    return new Promise((resolve, reject) => {
+      const messageTime = parseInt(message.split(":")[1]);
+      let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
+      if (
+        currentTime - messageTime <= 5 &&
+        bitcoinMessage.verify(message, address, signature)
+      ) {
+        const block = new BlockClass.Block(star);
+        this._addBlock(block);
+        resolve("Block added");
+      } else {
+        reject(new Error("Transaction timed out or signature failed"));
+      }
+    });
   }
 
   /**
@@ -135,7 +154,7 @@ class Blockchain {
       if (block) {
         resolve(block);
       } else {
-        resolve(null);
+        reject(null);
       }
     });
   }
