@@ -72,11 +72,18 @@ class Block {
       // Getting the encoded data saved in the Block
       const data = this.body;
       // Decoding the data to retrieve the JSON representation of the object
-      const blockData = JSON.parse(this.decodeData(data));
+      const decodedBodyData = JSON.parse(this.decodeData(data));
       // Parse the data to an object to be retrieve.
       // Resolve with the data if the object isn't the Genesis block
-      if (blockData && this.hash !== null) {
-        resolve(blockData);
+      if (decodedBodyData && this.hash !== null) {
+        const decodedBlockData = {
+          hash: this.hash,
+          height: this.height,
+          body: decodedBodyData,
+          time: this.time,
+          previousBlockHash: this.previousBlockHash,
+        };
+        resolve(decodedBlockData);
       } else {
         reject(new Error("Data not found or Genesis block"));
       }
