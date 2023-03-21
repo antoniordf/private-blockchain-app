@@ -38,8 +38,11 @@ class Block {
   validate() {
     return new Promise((resolve, reject) => {
       // let self = this;
+      // Use spread operator to create a shallow copy of the block, setting hash to null
       let clonedBlock = { ...this, hash: null };
+      // Calculate hash of cloned block
       let calculatedHash = SHA256(JSON.stringify(clonedBlock)).toString();
+      // resolve with true or false
       resolve(this.hash === calculatedHash);
     });
   }
