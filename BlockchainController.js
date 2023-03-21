@@ -26,9 +26,7 @@ class BlockchainController {
         try {
           block = await this.blockchain.getBlockByHeight(height);
         } catch (err) {
-          return res
-            .status(500)
-            .send("An error occurred while fetching the block.");
+          return res.status(500).send("The block you requested does not exist");
         }
         if (block) {
           return res.status(200).json(block);
