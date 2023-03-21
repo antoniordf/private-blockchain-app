@@ -28,7 +28,7 @@ class BlockchainController {
         } catch (err) {
           return res
             .status(500)
-            .send(`An error occurred while fetching the block. ${err.message}`);
+            .send("An error occurred while fetching the block.");
         }
         if (block) {
           return res.status(200).json(block);
