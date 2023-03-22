@@ -49,7 +49,7 @@ class BlockchainController {
           return res.status(200).json({ message: "Chain is valid" });
         } else {
           return res
-            .status(200)
+            .status(500)
             .json({ message: "Chain has errors", errors: errorLog });
         }
       } catch (err) {
