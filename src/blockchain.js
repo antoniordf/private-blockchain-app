@@ -213,13 +213,41 @@ class Blockchain {
   validateChain() {
     // let self = this;
     let errorLog = [];
-    return new Promise((resolve, reject) => {
-      this.chain.forEach((block) => {
-        if (block.validate() === false) {
-          errorLog.push(new Error(`Block ${block.height} failed validation`));
-        }
-      });
-      resolve(errorLog);
+    let promises = [];
+    return new Promise(async (resolve, reject) => {
+      for (const block of this.chain) {
+        // Skip the genesis block
+        if (block.height === 0) continue;
+
+        // Validate each block and check the previousBlockHash
+        promises.push(
+          block.validate().then((isValid) => {
+            if (!isValid) {
+              errorLog.push(
+                new Error(`Block ${block.height} failed validation`)
+              );
+            }
+
+            if (
+              block.height > 0 &&
+              block.previousBlockHash !== this.chain[block.height - 1].hash
+            ) {
+              errorLog.push(
+                new Error(
+                  `Block ${block.height} has an invalid previousBlockHash`
+                )
+              );
+            }
+          })
+        );
+      }
+
+      try {
+        await Promise.all(promises);
+        resolve(errorLog);
+      } catch (err) {
+        reject(err);
+      }
     });
   }
 }
