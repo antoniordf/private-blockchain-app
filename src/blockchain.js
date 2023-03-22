@@ -75,12 +75,19 @@ class Blockchain {
       }
       // Calculate the hash of this block
       block.hash = SHA256(JSON.stringify(block)).toString();
-      // If push successful, resolve with the added block, otherwise raise an error
-      if (this.chain.push(block)) {
-        resolve(block);
-      } else {
-        reject(new Error("Unable to add block"));
-      }
+      // Call validateChain() to validate the chain integrity and if the chain is valid, push block to chain
+      this.validateChain()
+        .then((errorLog) => {
+          if (errorLog.length === 0) {
+            this.chain.push(block);
+            resolve(block);
+          } else {
+            reject(
+              new Error("Chain integrity compromised, unable to add block")
+            );
+          }
+        })
+        .catch((err) => reject(new Error("Error validating chain.")));
     });
   }
 
